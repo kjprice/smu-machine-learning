@@ -55,16 +55,16 @@ Out_train = Out(training_index, :);
 n_train = length(In_train);
 disp(['Number of training records ' num2str(n_train)]);
 
-% Create an independent Validation dataset called InTest & OutTest
+% Create an independent Validation dataset called In_test & Out_test
 % containing 10% of the input data stored in the variables In and Out
 % Find the number of records in the independent Validation dataset and 
 % save it in a variable called n_test
 testing_index = c.test();
 
-InTest = In(testing_index, :);
-OutTest = Out(testing_index, :);
+In_test = In(testing_index, :);
+Out_test = Out(testing_index, :);
 
-n_test = length(InTest);
+n_test = length(In_test);
 disp(['Number of testing records '  num2str(n_test)]);
 
 %--------------------------------------------------------------------------
@@ -99,9 +99,9 @@ Out_Train_Estimate = predict(Mdl, In_train);
 
 %--------------------------------------------------------------------------
 % Use the trained model, Mdl, provided with the independent validation data 
-% input matrix InTest to estimate the pollen values and save the results in 
+% input matrix In_test to estimate the pollen values and save the results in 
 % a column vector called Out_Test
-Out_Test_Estimate = predict(Mdl, InTest);
+Out_Test_Estimate = predict(Mdl, In_test);
 
 %--------------------------------------------------------------------------
 % Save the mean square error (MSE) of the TreeBagger model Mdl in a 
@@ -112,8 +112,8 @@ mseTrain = mean((Out_Train_Estimate - Out_train) .^2);
 %--------------------------------------------------------------------------
 % Save the mean square error (MSE) of the TreeBagger model Mdl in a 
 % variable called mseTest for the estimated pollen using as input to the 
-% model Mdl the independent validation data points in the input array InTest
-mseTest = mean((Out_Test_Estimate - OutTest) .^2);
+% model Mdl the independent validation data points in the input array In_test
+mseTest = mean((Out_Test_Estimate - Out_test) .^2);
 %--------------------------------------------------------------------------
 % Save the correlation coefficient for the training data with the 
 % associated TreeBagger model estimates in a variable called r_train
@@ -129,7 +129,7 @@ disp('all done here')
 % associated TreeBagger model estimates in a variable called r_test
 % hint: check out the function corrcoef
 
-R_test = corrcoef(Out_Test_Estimate, OutTest);
+R_test = corrcoef(Out_Test_Estimate, Out_test);
 r_test = R_test(1,2);
 
 
@@ -181,9 +181,14 @@ print 'tb-errhist-m.png' '-dpng'
 % save to a png file called tb-scatter-m.png
 
 figure;
-line(0:length(Out), 0:length(Out))
+plot(0:length(Out), 0:length(Out))
 hold on;
 scatter(Out_train, Out_Train_Estimate, 'filled');
-scatter(Out_test, Out_Test_Estimate);
+scatter(Out_test, Out_Test_Estimate, 'filled');
 hold off;
 
+xlabel('Actual Pollen');
+ylabel('Estimated Pollen');
+legend({'1:1', ['Train ' num2str(r_train)], ['Test ' num2str(r_test)]});
+
+print 'tb-scatter-m.png' '-dpng'
