@@ -2,7 +2,14 @@ const fs = require('fs');
 const request = require('request');
 const throttledRequest = require('throttled-request')(request);
 
-const IMG_URLS_FILEPATH = 'data/samuel-images-urls.txt';
+const IMAGE_PATHS = {
+  samuel: 'data/samuel-images-urls.txt',
+  notSamuel: 'data/not-samuel-images-urls.txt',
+};
+
+const IMAGES_TO_SCRAPE = 'notSamuel';
+
+const IMG_URLS_FILEPATH = IMAGE_PATHS[IMAGES_TO_SCRAPE];
 
 const LIMIT_RATE = 26;
 const TEN_SECONDS = 10 * 1000;
@@ -19,9 +26,11 @@ function getUrls() {
 function pipeImageToLocal(url, imageNumber) {
   return new Promise((res, rej) => {
     return throttledRequest(url)
-    .pipe(fs.createWriteStream(`data/images/samuel/${imageNumber}.jpg`))
+    .on('error', (e) => console.log(e))
+    .pipe(fs.createWriteStream(`data/images/${IMAGES_TO_SCRAPE}/${imageNumber}.jpg`))
     .on('error', (e) => {
-      rej(e);
+      console.log(e);
+      // rej(e);
     });
   });
 }
