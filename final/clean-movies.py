@@ -61,9 +61,9 @@ def actor_has_more_than_x_movies(actor, number_of_movies = 3):
 
 # Create a list of all actors that have been in more than 3 movies
 movies_actors_ids = []
-for actors in movies.cast:
+for movie_actors in movies.cast:
   movie_actors_ids = []
-  for actor in actors:
+  for actor in movie_actors:
     if (not actor_has_more_than_x_movies(actor, 3)):
       continue
     movie_actors_ids.append(str(actor['id']))
